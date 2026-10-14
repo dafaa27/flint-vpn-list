@@ -8,7 +8,7 @@ from pathlib import Path
 BASE = 'https://raw.githubusercontent.com/itdoginfo/allow-domains/main/'
 SOURCES = (
     [f'Categories/{name}.lst' for name in ('anime', 'block', 'geoblock', 'news', 'porn')]
-    + [f'Services/{name}.lst' for name in ('discord', 'hdrezka', 'meta', 'telegram', 'tiktok', 'twitter', 'youtube', 'google_ai', 'roblox')]
+    + [f'Services/{name}.lst' for name in ('discord', 'hdrezka', 'meta', 'telegram', 'tiktok', 'twitter', 'youtube', 'google_ai', 'google_play', 'roblox')]
     + [f'Subnets/IPv4/{name}.lst' for name in ('discord', 'meta', 'telegram', 'twitter', 'google_meet', 'roblox')]
 )
 
