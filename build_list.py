@@ -48,7 +48,8 @@ def extra_networks():
             if network.version == 4:
                 current.add(str(network))
         if not current:
-            raise ValueError(f'Empty IPv4 source: {name}, {url}')
+            print(f'No IPv4 prefixes: {name}, {url}; checking other sources')
+            continue
         print(f'b4geoip/{name}: {len(current)} from {url}')
         found.add(name)
         result.update(current)
