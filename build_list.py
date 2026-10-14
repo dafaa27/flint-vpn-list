@@ -20,7 +20,7 @@ def fetch_json(url):
 def extra_networks():
     # Follow the same JSON sources selected by b4geoip, without executing its code.
     config = fetch_json('https://raw.githubusercontent.com/DanielLavrushin/b4geoip/main/config.json')
-    selected = {'github', 'bungie', 'sony', 'ubisoft'}
+    selected = {'bungie', 'sony', 'ubisoft'}
     result = set()
     found = set()
     for item in config['input']:
@@ -57,6 +57,33 @@ def extra_networks():
         raise ValueError(f'Missing categories: {selected - found}')
     return result
 
+def github_domains():
+    # Only GitHub and Copilot; intentionally exclude the separate npmjs list.
+    base = 'https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/'
+    result = set()
+    for name in ('github', 'github-copilot'):
+        request = urllib.request.Request(base + name, headers={'User-Agent': 'flint-vpn-list'})
+        with urllib.request.urlopen(request, timeout=60) as response:
+            content = response.read().decode('utf-8-sig')
+        for line in content.splitlines():
+            value = line.split('#', 1)[0].strip()
+            if not value:
+                continue
+            if value.startswith('include:'):
+                if value not in ('include:github-copilot', 'include:npmjs'):
+                    raise ValueError(f'Unexpected GitHub include: {value}')
+                continue
+            value = value.split()[0]
+            if value.startswith(('full:', 'domain:')):
+                value = value.split(':', 1)[1]
+            elif ':' in value:
+                raise ValueError(f'Unsupported GitHub rule: {value}')
+            result.add(normalize(value))
+    if not result or None in result:
+        raise ValueError('Invalid GitHub domain list')
+    print(f'GitHub + Copilot domains: {len(result)}')
+    return result
+
 def normalize(line):
     value = line.split('#', 1)[0].strip().lower()
     if not value or value == '.ua':
@@ -84,6 +111,7 @@ def main():
         print(f'{source}: {len(current)}')
         entries.update(current)
     entries.update(extra_networks())
+    entries.update(github_domains())
     target = Path(__file__).with_name('vpn-list.txt')
     temporary = target.with_suffix('.tmp')
     temporary.write_text('\n'.join(sorted(entries)) + '\n', encoding='utf-8')
