@@ -1349,6 +1349,7 @@ privatekeys.pw
 prnt.sc
 proactivebackend-pa.googleapis.com
 prod-lt-playstoregatewayadapter-pa.googleapis.com
+production-copilot-host-westus.webpubsub.azure.com
 production-openaicom-storage.azureedge.net
 productionresultssa0.blob.core.windows.net
 productionresultssa1.blob.core.windows.net
